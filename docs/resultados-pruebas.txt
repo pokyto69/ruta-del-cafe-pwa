@@ -1,0 +1,139 @@
+
+> ruta-del-cafe-pwa@1.0.0 test
+> node --test --test-concurrency=1 tests/api.test.js tests/pwa.test.js
+
+TAP version 13
+# Subtest: API-01 · GET /api/cafes devuelve el catálogo completo
+ok 1 - API-01 · GET /api/cafes devuelve el catálogo completo
+  ---
+  duration_ms: 76.6556
+  ...
+# Subtest: API-02 · GET /api/cafes?q= filtra por texto
+ok 2 - API-02 · GET /api/cafes?q= filtra por texto
+  ---
+  duration_ms: 7.0599
+  ...
+# Subtest: API-03 · GET /api/cafes/:id inexistente responde 404
+ok 3 - API-03 · GET /api/cafes/:id inexistente responde 404
+  ---
+  duration_ms: 4.2547
+  ...
+# Subtest: SSR-01 · /cafe/:id devuelve HTML completo generado en el servidor
+ok 4 - SSR-01 · /cafe/:id devuelve HTML completo generado en el servidor
+  ---
+  duration_ms: 72.3922
+  ...
+# Subtest: SSR-02 · /cafe/:id inexistente responde 404 en HTML
+ok 5 - SSR-02 · /cafe/:id inexistente responde 404 en HTML
+  ---
+  duration_ms: 4.9962
+  ...
+# Subtest: SSR-03 · el SSR escapa el contenido (sin inyección de HTML)
+ok 6 - SSR-03 · el SSR escapa el contenido (sin inyección de HTML)
+  ---
+  duration_ms: 3.7368
+  ...
+# Subtest: RES-01 · POST /api/resenas válido crea la reseña (201)
+ok 7 - RES-01 · POST /api/resenas válido crea la reseña (201)
+  ---
+  duration_ms: 76.6753
+  ...
+# Subtest: RES-02 · reenviar el mismo idLocal no duplica (idempotencia del sync)
+ok 8 - RES-02 · reenviar el mismo idLocal no duplica (idempotencia del sync)
+  ---
+  duration_ms: 12.6286
+  ...
+# Subtest: RES-03 · reseña inválida responde 400
+ok 9 - RES-03 · reseña inválida responde 400
+  ---
+  duration_ms: 5.3236
+  ...
+# Subtest: PUSH-01 · GET /api/push/clave-publica entrega una clave VAPID
+ok 10 - PUSH-01 · GET /api/push/clave-publica entrega una clave VAPID
+  ---
+  duration_ms: 3.5933
+  ...
+# Subtest: PUSH-02 · una suscripción mal formada se rechaza (400)
+ok 11 - PUSH-02 · una suscripción mal formada se rechaza (400)
+  ---
+  duration_ms: 3.1474
+  ...
+# Subtest: EST-01 · manifest.json, sw.js y offline.html se sirven
+ok 12 - EST-01 · manifest.json, sw.js y offline.html se sirven
+  ---
+  duration_ms: 22.3553
+  ...
+# Subtest: PWA-01 · el manifiesto es válido y la app es instalable
+ok 13 - PWA-01 · el manifiesto es válido y la app es instalable
+  ---
+  duration_ms: 2393.4721
+  ...
+# Subtest: PWA-02 · el service worker se activa, controla la página y precachea el shell
+ok 14 - PWA-02 · el service worker se activa, controla la página y precachea el shell
+  ---
+  duration_ms: 1737.9321
+  ...
+# Subtest: PWA-03 · splash dentro de la app se retira y el Home muestra contenido
+ok 15 - PWA-03 · splash dentro de la app se retira y el Home muestra contenido
+  ---
+  duration_ms: 3100.136
+  ...
+# Subtest: PWA-04 · CSR: el enrutador pinta catálogo, búsqueda y detalle
+ok 16 - PWA-04 · CSR: el enrutador pinta catálogo, búsqueda y detalle
+  ---
+  duration_ms: 2159.7297
+  ...
+# Subtest: PWA-05 · favoritos en IndexedDB y tema en localStorage persisten tras recargar
+ok 17 - PWA-05 · favoritos en IndexedDB y tema en localStorage persisten tras recargar
+  ---
+  duration_ms: 3581.4242
+  ...
+# Subtest: PWA-06 · sin conexión: el shell, el catálogo y el detalle siguen funcionando
+ok 18 - PWA-06 · sin conexión: el shell, el catálogo y el detalle siguen funcionando
+  ---
+  duration_ms: 2206.1978
+  ...
+# Subtest: PWA-07 · sin conexión: ficha SSR visitada sale de caché; no visitada muestra offline.html
+ok 19 - PWA-07 · sin conexión: ficha SSR visitada sale de caché; no visitada muestra offline.html
+  ---
+  duration_ms: 2785.2857
+  ...
+# Subtest: PWA-08 · reseña sin conexión queda pendiente y Background Sync la envía
+ok 20 - PWA-08 · reseña sin conexión queda pendiente y Background Sync la envía
+  ---
+  duration_ms: 2262.2217
+  ...
+# Subtest: PWA-09 · una versión nueva del SW se anuncia y se aplica al aceptar
+ok 21 - PWA-09 · una versión nueva del SW se anuncia y se aplica al aceptar
+  ---
+  duration_ms: 4551.8891
+  ...
+# Subtest: PWA-10 · notificación local y evento push del service worker
+ok 22 - PWA-10 · notificación local y evento push del service worker
+  ---
+  duration_ms: 3449.9281
+  ...
+# Subtest: PWA-11 · «Cerca de mí» ordena por distancia usando la geolocalización
+ok 23 - PWA-11 · «Cerca de mí» ordena por distancia usando la geolocalización
+  ---
+  duration_ms: 1972.8372
+  ...
+# Subtest: PWA-12 · la ficha SSR se ve sin JavaScript y se hidrata con JavaScript
+ok 24 - PWA-12 · la ficha SSR se ve sin JavaScript y se hidrata con JavaScript
+  ---
+  duration_ms: 3835.5251
+  ...
+# Subtest: PWA-13 · ninguna vista produce errores de JavaScript
+ok 25 - PWA-13 · ninguna vista produce errores de JavaScript
+  ---
+  duration_ms: 4143.1061
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 42473.4342

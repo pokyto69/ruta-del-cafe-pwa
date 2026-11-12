@@ -28,6 +28,7 @@
     "web-push": "^4.0.0"
   },
   "devDependencies": {
+    "docx": "^9.15.3",
     "puppeteer-core": "^25.17.0"
   }
 }

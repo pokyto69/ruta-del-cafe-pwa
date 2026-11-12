@@ -7,6 +7,9 @@ vapid.json
 data/suscripciones.json
 data/resenas.json
 
+# Archivos temporales de Word
+~$*
+
 # Sistema / editor
 .DS_Store
 Thumbs.db
