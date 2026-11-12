@@ -7,6 +7,7 @@ import { esFavorito, alternarFavorito, listarFavoritos } from './favoritos.js';
 import { vaciar } from './db.js';
 import { montarResenas } from './resenas.js';
 import { versionServiceWorker } from './actualizacion.js';
+import { montarAjustesNotificaciones } from './notificaciones.js';
 
 export function tarjetaCafe(c, extra = '') {
   return `
@@ -150,6 +151,7 @@ export async function vistaAjustes(el) {
         <button class="btn btn--peligro" id="borrar-datos" type="button">Borrar datos locales</button>
       </div>
     </section>`;
+  montarAjustesNotificaciones(el.querySelector('#zona-ajustes-extra')); // Fase 10
   versionServiceWorker().then((v) => { const s = el.querySelector('#version-sw'); if (s) s.textContent = v; });
   const tema = el.querySelector('#tema');
   tema.value = prefs.tema;

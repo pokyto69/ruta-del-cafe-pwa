@@ -1,7 +1,7 @@
 // Service worker de «Ruta del Café».
 // Fase 3: eventos install / activate / fetch.
 // Fase 7: tres estrategias de caché y página offline.
-const VERSION = 'v7';
+const VERSION = 'v8';
 const CACHE_SHELL = `shell-${VERSION}`;     // app shell precacheado (cache first)
 const CACHE_DATOS = `datos-${VERSION}`;     // respuestas de la API (network first)
 const CACHE_PAGINAS = `paginas-${VERSION}`; // fichas SSR (stale-while-revalidate)
@@ -25,6 +25,8 @@ const SHELL = [
   './js/conexion.js',
   './js/resenas.js',
   './js/actualizacion.js',
+  './js/notificaciones.js',
+  './icons/badge-72.png',
   './js/ficha.js',
   './data/cafes.json',
   './manifest.json',
@@ -166,6 +168,40 @@ self.addEventListener('sync', (event) => {
   if (event.tag === 'enviar-resenas') {
     event.waitUntil(enviarResenasPendientes());
   }
+});
+
+// ---------- Fase 10.5 · Recibir el push y mostrar la notificación ----------
+self.addEventListener('push', (event) => {
+  let datos = {};
+  try { datos = event.data ? event.data.json() : {}; } catch { datos = { cuerpo: event.data?.text() }; }
+  const titulo = datos.titulo || 'Ruta del Café';
+  event.waitUntil(
+    self.registration.showNotification(titulo, {
+      body: datos.cuerpo || 'Tienes novedades.',
+      icon: './icons/icon-192.png',
+      badge: './icons/badge-72.png',
+      tag: datos.etiqueta || 'push',
+      renotify: true,
+      data: { url: datos.url || './' },
+      actions: [{ action: 'abrir', title: 'Ver' }, { action: 'cerrar', title: 'Cerrar' }],
+    })
+  );
+});
+
+// Al pulsar la notificación: enfocar una ventana abierta de la app o abrir una nueva
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  if (event.action === 'cerrar') return;
+  const destino = new URL(event.notification.data?.url || './', self.registration.scope).href;
+  event.waitUntil((async () => {
+    const ventanas = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const abierta = ventanas.find((v) => v.url.startsWith(self.registration.scope));
+    if (abierta) {
+      await abierta.focus();
+      return abierta.navigate(destino).catch(() => abierta.postMessage({ tipo: 'navegar', url: destino }));
+    }
+    return self.clients.openWindow(destino);
+  })());
 });
 
 // ---------- Enrutamiento de peticiones ----------

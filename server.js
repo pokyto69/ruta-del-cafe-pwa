@@ -84,6 +84,50 @@ app.post('/api/resenas', (req, res) => {
   app.emit('resena-nueva', resena); // la Fase 10 la usa para enviar un push
 });
 
+// ---------- Fase 10.3 · Push: suscripciones y envío ----------
+const push = require('./lib/push');
+
+app.get('/api/push/clave-publica', (req, res) => {
+  res.json({ clavePublica: push.clavePublica });
+});
+
+app.post('/api/push/suscribir', (req, res) => {
+  if (!push.esSuscripcionValida(req.body)) return res.status(400).json({ error: 'Suscripción inválida' });
+  const total = push.guardarSuscripcion(req.body);
+  res.status(201).json({ ok: true, total });
+});
+
+app.post('/api/push/desuscribir', (req, res) => {
+  const eliminadas = push.borrarSuscripcion(req.body?.endpoint);
+  res.json({ ok: true, eliminadas });
+});
+
+app.post('/api/push/enviar', async (req, res) => {
+  // En un despliegue público, define PUSH_TOKEN para que solo tú puedas enviar avisos
+  if (process.env.PUSH_TOKEN && req.get('x-push-token') !== process.env.PUSH_TOKEN) {
+    return res.status(401).json({ error: 'No autorizado' });
+  }
+  const { titulo, cuerpo, url } = req.body || {};
+  const resultado = await push.enviarATodos({
+    titulo: String(titulo || 'Ruta del Café').slice(0, 80),
+    cuerpo: String(cuerpo || '¡Hay novedades en tus cafeterías!').slice(0, 200),
+    url: typeof url === 'string' && url.startsWith('./') ? url : './',
+    etiqueta: 'prueba',
+  });
+  res.json(resultado);
+});
+
+// Cada reseña nueva genera un push para los suscriptores
+app.on('resena-nueva', (resena) => {
+  const cafe = buscarCafe(resena.cafeId);
+  push.enviarATodos({
+    titulo: `Nueva reseña en ${cafe?.nombre || 'una cafetería'}`,
+    cuerpo: `${resena.autor}: ${'★'.repeat(resena.puntuacion)} «${resena.texto.slice(0, 80)}»`,
+    url: `./#/cafe/${resena.cafeId}`,
+    etiqueta: `resena-${resena.cafeId}`,
+  }).catch((e) => console.warn('[Push] Falló el aviso de reseña:', e.message));
+});
+
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`Ruta del Café escuchando en http://localhost:${PORT}`);

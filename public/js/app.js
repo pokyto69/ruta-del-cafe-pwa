@@ -27,6 +27,11 @@ ruta('/ajustes', vistaAjustes, 'ajustes');
 // Fase 5.2: el splash se oculta cuando la primera vista terminó de pintarse
 iniciarRouter().finally(ocultarSplash);
 
+// Fase 10.5: si el SW no pudo navegar la ventana al pulsar una notificación, lo hacemos aquí
+navigator.serviceWorker?.addEventListener('message', (e) => {
+  if (e.data?.tipo === 'navegar') location.href = e.data.url;
+});
+
 // Fase 3 + Fase 9: registrar el service worker y vigilar actualizaciones
 window.addEventListener('load', () => {
   registrarServiceWorker().catch((err) => console.error('[App] Error al registrar el service worker:', err));
