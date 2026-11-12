@@ -1,7 +1,7 @@
 // Service worker de «Ruta del Café».
 // Fase 3: eventos install / activate / fetch.
 // Fase 7: tres estrategias de caché y página offline.
-const VERSION = 'v5';
+const VERSION = 'v6';
 const CACHE_SHELL = `shell-${VERSION}`;     // app shell precacheado (cache first)
 const CACHE_DATOS = `datos-${VERSION}`;     // respuestas de la API (network first)
 const CACHE_PAGINAS = `paginas-${VERSION}`; // fichas SSR (stale-while-revalidate)
@@ -23,6 +23,7 @@ const SHELL = [
   './js/prefs.js',
   './js/favoritos.js',
   './js/conexion.js',
+  './js/resenas.js',
   './js/ficha.js',
   './data/cafes.json',
   './manifest.json',
@@ -86,6 +87,72 @@ async function staleWhileRevalidate(event, nombreCache = CACHE_PAGINAS) {
   event.waitUntil(deRed);
   return enCache || (await deRed) || caches.match('./offline.html');
 }
+
+// ---------- Fase 8.3 · Background Sync de reseñas ----------
+// El SW abre la misma base IndexedDB que la página (mismo origen).
+function abrirDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('ruta-cafe', 1);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains('cafes')) db.createObjectStore('cafes', { keyPath: 'id' });
+      if (!db.objectStoreNames.contains('favoritos')) db.createObjectStore('favoritos', { keyPath: 'id' });
+      if (!db.objectStoreNames.contains('resenas')) {
+        const s = db.createObjectStore('resenas', { keyPath: 'idLocal' });
+        s.createIndex('cafeId', 'cafeId');
+        s.createIndex('estado', 'estado');
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function resenasPendientes() {
+  const db = await abrirDB();
+  return new Promise((resolve, reject) => {
+    const req = db.transaction('resenas').objectStore('resenas').index('estado').getAll('pendiente');
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function marcarEnviada(resena) {
+  const db = await abrirDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('resenas', 'readwrite');
+    tx.objectStore('resenas').put({ ...resena, estado: 'enviada', enviadaEn: Date.now() });
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function enviarResenasPendientes() {
+  const pendientes = await resenasPendientes();
+  console.log(`[SW] sync: ${pendientes.length} reseña(s) pendiente(s)`);
+  let enviadas = 0;
+  for (const resena of pendientes) {
+    const resp = await fetch('./api/resenas', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(resena),
+    });
+    // Si falla, se lanza el error: el navegador reintentará el sync más tarde.
+    if (!resp.ok) throw new Error(`El servidor respondió ${resp.status}`);
+    await marcarEnviada(resena);
+    enviadas++;
+  }
+  if (enviadas) {
+    const clientes = await self.clients.matchAll({ includeUncontrolled: true, type: 'window' });
+    clientes.forEach((c) => c.postMessage({ tipo: 'resenas-sincronizadas', enviadas }));
+  }
+}
+
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'enviar-resenas') {
+    event.waitUntil(enviarResenasPendientes());
+  }
+});
 
 // ---------- Enrutamiento de peticiones ----------
 self.addEventListener('fetch', (event) => {

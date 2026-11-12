@@ -5,6 +5,7 @@ import { actualizarBotones } from './instalacion.js';
 import { leerPrefs, guardarPref, borrarPrefs } from './prefs.js';
 import { esFavorito, alternarFavorito, listarFavoritos } from './favoritos.js';
 import { vaciar } from './db.js';
+import { montarResenas } from './resenas.js';
 
 export function tarjetaCafe(c, extra = '') {
   return `
@@ -114,6 +115,7 @@ export async function vistaDetalle(el, { id }) {
     btn.setAttribute('aria-pressed', ahora);
     avisar(ahora ? 'Guardada en favoritas (IndexedDB)' : 'Quitada de favoritas');
   });
+  await montarResenas(el.querySelector('#zona-resenas'), c.id); // Fase 8
   return c;
 }
 

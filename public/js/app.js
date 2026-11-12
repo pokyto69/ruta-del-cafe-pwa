@@ -4,10 +4,14 @@ import { vistaInicio, vistaCatalogo, vistaDetalle, vistaAjustes } from './vistas
 import { ocultarSplash } from './splash.js';
 import { aplicarTema, registrarVisita } from './prefs.js';
 import { iniciarIndicadorConexion } from './conexion.js';
+import { iniciarSincronizacionResenas } from './resenas.js';
 import './instalacion.js';
 
 // Fase 7.3: indicador de conexión en la barra superior
 iniciarIndicadorConexion();
+
+// Fase 8: escuchar el resultado del Background Sync de reseñas
+iniciarSincronizacionResenas();
 
 // Fase 6.2: aplicar preferencias guardadas antes de pintar
 aplicarTema();
