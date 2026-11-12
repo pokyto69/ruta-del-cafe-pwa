@@ -1,0 +1,14 @@
+# Dependencias
+node_modules/
+
+# Secretos y datos generados en tiempo de ejecución
+.env
+vapid.json
+data/suscripciones.json
+data/resenas.json
+
+# Sistema / editor
+.DS_Store
+Thumbs.db
+.vscode/
+*.log

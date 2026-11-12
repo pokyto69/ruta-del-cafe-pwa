@@ -1,0 +1,23 @@
+{
+  "name": "ruta-del-cafe-pwa",
+  "version": "1.0.0",
+  "description": "Ruta del Café: Aplicación Web Progresiva con app shell, service worker, offline, Background Sync y notificaciones push.",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "iconos": "node scripts/generar-iconos.js",
+    "vapid": "node scripts/generar-vapid.js",
+    "test": "node --test tests/"
+  },
+  "keywords": ["pwa", "service-worker", "offline", "push"],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^5.3.0",
+    "web-push": "^4.0.0"
+  }
+}
