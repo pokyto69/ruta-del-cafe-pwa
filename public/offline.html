@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sin conexión · Ruta del Café</title>
+  <meta name="theme-color" content="#6f4e37">
+  <!-- Estilos en línea: esta página debe verse aunque nada más esté en caché -->
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 16px;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: #f6efe7; color: #2b1d14; text-align: center;
+    }
+    @media (prefers-color-scheme: dark) { body { background: #1b1411; color: #f3e9df; } }
+    .caja { max-width: 420px; }
+    .icono { font-size: 4rem; }
+    h1 { margin: .2em 0; }
+    p { opacity: .8; }
+    a, button {
+      display: inline-block; margin: 6px; padding: 10px 18px; border: 0; border-radius: 10px;
+      background: #6f4e37; color: #fff; font: inherit; font-weight: 600; text-decoration: none; cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <main class="caja">
+    <div class="icono" aria-hidden="true">📴</div>
+    <h1>Estás sin conexión</h1>
+    <p>Esta página no está guardada en tu dispositivo. Las cafeterías que ya visitaste, tus favoritas y tus reseñas siguen disponibles.</p>
+    <a href="./">Ir al inicio</a>
+    <button type="button" onclick="location.reload()">Reintentar</button>
+  </main>
+  <script>
+    // Recarga automáticamente cuando vuelve la red
+    window.addEventListener('online', () => location.reload());
+  </script>
+</body>
+</html>

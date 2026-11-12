@@ -48,12 +48,16 @@ async function abrirNavegador() {
 
 /** Espera a que el service worker controle la página. */
 async function esperarSW(pagina) {
-  await pagina.evaluate(async () => {
-    await navigator.serviceWorker.ready;
-    if (!navigator.serviceWorker.controller) {
-      await new Promise((r) => navigator.serviceWorker.addEventListener('controllerchange', r, { once: true }));
-    }
+  await pagina.evaluate(() => navigator.serviceWorker.ready);
+  const controlada = await pagina.evaluate(async () => {
+    if (navigator.serviceWorker.controller) return true;
+    // Con clients.claim() el SW toma el control sin recargar; damos un margen.
+    return Promise.race([
+      new Promise((r) => navigator.serviceWorker.addEventListener('controllerchange', () => r(true), { once: true })),
+      new Promise((r) => setTimeout(() => r(false), 2000)),
+    ]);
   });
+  if (!controlada) await pagina.reload({ waitUntil: 'networkidle0' });
 }
 
 module.exports = { iniciarServidor, abrirNavegador, esperarSW };
