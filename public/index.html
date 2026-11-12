@@ -1,5 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
-<head><meta charset="UTF-8"><title>Ruta del Café</title></head>
-<body><h1>Ruta del Café</h1><p>Servidor funcionando.</p></body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Ruta del Café: descubre cafeterías de especialidad, guarda favoritas y deja reseñas incluso sin conexión.">
+  <title>Ruta del Café</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- ===== APP SHELL: lo mínimo para pintar la interfaz; se cachea y carga al instante ===== -->
+  <header class="barra">
+    <a class="marca" href="#/">
+      <span class="marca__logo" aria-hidden="true">☕</span>
+      <span class="marca__texto">Ruta del Café</span>
+    </a>
+    <div class="barra__acciones">
+      <span id="estado-red" class="estado-red" role="status" aria-live="polite">En línea</span>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Navegación principal">
+    <a href="#/" data-ruta="inicio">Inicio</a>
+    <a href="#/catalogo" data-ruta="catalogo">Catálogo</a>
+    <a href="#/cerca" data-ruta="cerca">Cerca de mí</a>
+    <a href="#/ajustes" data-ruta="ajustes">Ajustes</a>
+  </nav>
+
+  <!-- Contenido dinámico: aquí se pintan las vistas -->
+  <main id="app" class="contenido" tabindex="-1">
+    <section class="tarjeta">
+      <h1>Bienvenido</h1>
+      <p>Este es el <strong>app shell</strong>: cabecera, navegación y pie se cargan primero; el contenido se inyecta en este contenedor.</p>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <small>Ruta del Café · PWA de ejemplo</small>
+  </footer>
+</body>
 </html>
