@@ -1,7 +1,7 @@
 // Service worker de «Ruta del Café».
 // Fase 3: eventos install / activate / fetch.
 // Fase 7: tres estrategias de caché y página offline.
-const VERSION = 'v8';
+const VERSION = 'v9';
 const CACHE_SHELL = `shell-${VERSION}`;     // app shell precacheado (cache first)
 const CACHE_DATOS = `datos-${VERSION}`;     // respuestas de la API (network first)
 const CACHE_PAGINAS = `paginas-${VERSION}`; // fichas SSR (stale-while-revalidate)
@@ -26,6 +26,8 @@ const SHELL = [
   './js/resenas.js',
   './js/actualizacion.js',
   './js/notificaciones.js',
+  './js/dispositivo.js',
+  './js/cerca.js',
   './icons/badge-72.png',
   './js/ficha.js',
   './data/cafes.json',

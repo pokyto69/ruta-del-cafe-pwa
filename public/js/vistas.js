@@ -8,6 +8,7 @@ import { vaciar } from './db.js';
 import { montarResenas } from './resenas.js';
 import { versionServiceWorker } from './actualizacion.js';
 import { montarAjustesNotificaciones } from './notificaciones.js';
+import { compartir, vibrar, capacidades, estadoBateria, estadoRed } from './dispositivo.js';
 
 export function tarjetaCafe(c, extra = '') {
   return `
@@ -106,6 +107,7 @@ export async function vistaDetalle(el, { id }) {
       <div class="acciones">
         <a class="btn btn--sec" href="#/catalogo">← Volver</a>
         <button class="btn" id="btn-fav" type="button" aria-pressed="${fav}">${fav ? '♥ En favoritas' : '♡ Añadir a favoritas'}</button>
+        <button class="btn btn--sec" id="btn-compartir" type="button">↗ Compartir</button>
         <a class="btn btn--sec" href="cafe/${c.id}">Ver versión SSR</a>
       </div>
     </article>
@@ -115,7 +117,13 @@ export async function vistaDetalle(el, { id }) {
     const ahora = await alternarFavorito(c);
     btn.textContent = ahora ? '♥ En favoritas' : '♡ Añadir a favoritas';
     btn.setAttribute('aria-pressed', ahora);
+    vibrar(40); // Fase 11: respuesta háptica
     avisar(ahora ? 'Guardada en favoritas (IndexedDB)' : 'Quitada de favoritas');
+  });
+  el.querySelector('#btn-compartir').addEventListener('click', async () => {
+    const url = new URL(`#/cafe/${c.id}`, location.href).href;
+    const r = await compartir({ title: c.nombre, text: c.descripcion, url });
+    if (r === 'copiado') avisar('Enlace copiado al portapapeles');
   });
   await montarResenas(el.querySelector('#zona-resenas'), c.id); // Fase 8
   return c;
@@ -144,6 +152,11 @@ export async function vistaAjustes(el) {
     </section>
     <div id="zona-ajustes-extra"></div>
     <section class="tarjeta">
+      <h2>Tu dispositivo</h2>
+      <div class="etiquetas" id="capacidades"></div>
+      <p class="meta" id="info-dispositivo"></p>
+    </section>
+    <section class="tarjeta">
       <h2>Datos guardados</h2>
       <p class="meta">${escapar(espacio || 'Estimación de almacenamiento no disponible.')}</p>
       <p class="meta">Versión del service worker: <strong id="version-sw">…</strong></p>
@@ -152,6 +165,17 @@ export async function vistaAjustes(el) {
       </div>
     </section>`;
   montarAjustesNotificaciones(el.querySelector('#zona-ajustes-extra')); // Fase 10
+  // Fase 11.1: qué sensores/APIs ofrece este dispositivo
+  el.querySelector('#capacidades').innerHTML = Object.entries(capacidades())
+    .map(([k, si]) => `<span class="etiqueta">${si ? '✔' : '✖'} ${escapar(k)}</span>`).join('');
+  estadoBateria().then((b) => {
+    const red = estadoRed();
+    const partes = [];
+    if (b) partes.push(`Batería ${b.nivel}%${b.cargando ? ' (cargando)' : ''}`);
+    if (red) partes.push(`Red ${red.tipo}, ~${red.bajada} Mb/s${red.ahorroDatos ? ', ahorro de datos' : ''}`);
+    const info = el.querySelector('#info-dispositivo');
+    if (info) info.textContent = partes.join(' · ') || 'Sin información adicional de batería o red.';
+  });
   versionServiceWorker().then((v) => { const s = el.querySelector('#version-sw'); if (s) s.textContent = v; });
   const tema = el.querySelector('#tema');
   tema.value = prefs.tema;
