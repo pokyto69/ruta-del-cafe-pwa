@@ -6,6 +6,7 @@ import { leerPrefs, guardarPref, borrarPrefs } from './prefs.js';
 import { esFavorito, alternarFavorito, listarFavoritos } from './favoritos.js';
 import { vaciar } from './db.js';
 import { montarResenas } from './resenas.js';
+import { versionServiceWorker } from './actualizacion.js';
 
 export function tarjetaCafe(c, extra = '') {
   return `
@@ -144,10 +145,12 @@ export async function vistaAjustes(el) {
     <section class="tarjeta">
       <h2>Datos guardados</h2>
       <p class="meta">${escapar(espacio || 'Estimación de almacenamiento no disponible.')}</p>
+      <p class="meta">Versión del service worker: <strong id="version-sw">…</strong></p>
       <div class="acciones">
         <button class="btn btn--peligro" id="borrar-datos" type="button">Borrar datos locales</button>
       </div>
     </section>`;
+  versionServiceWorker().then((v) => { const s = el.querySelector('#version-sw'); if (s) s.textContent = v; });
   const tema = el.querySelector('#tema');
   tema.value = prefs.tema;
   tema.addEventListener('change', () => guardarPref('tema', tema.value));

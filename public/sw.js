@@ -1,7 +1,7 @@
 // Service worker de «Ruta del Café».
 // Fase 3: eventos install / activate / fetch.
 // Fase 7: tres estrategias de caché y página offline.
-const VERSION = 'v6';
+const VERSION = 'v7';
 const CACHE_SHELL = `shell-${VERSION}`;     // app shell precacheado (cache first)
 const CACHE_DATOS = `datos-${VERSION}`;     // respuestas de la API (network first)
 const CACHE_PAGINAS = `paginas-${VERSION}`; // fichas SSR (stale-while-revalidate)
@@ -24,6 +24,7 @@ const SHELL = [
   './js/favoritos.js',
   './js/conexion.js',
   './js/resenas.js',
+  './js/actualizacion.js',
   './js/ficha.js',
   './data/cafes.json',
   './manifest.json',
@@ -42,10 +43,23 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   console.log('[SW] activate', VERSION);
   event.waitUntil(
-    caches.keys().then((claves) =>
-      Promise.all(claves.filter((c) => !CACHES_ACTUALES.includes(c)).map((c) => caches.delete(c)))
-    )
+    caches.keys()
+      .then((claves) =>
+        Promise.all(claves.filter((c) => !CACHES_ACTUALES.includes(c)).map((c) => caches.delete(c))))
+      // Fase 9.1: tomar el control de las pestañas abiertas sin esperar a que se recarguen
+      .then(() => self.clients.claim())
   );
+});
+
+// ---------- Fase 9.1 · Mensajes desde la página ----------
+self.addEventListener('message', (event) => {
+  const { tipo } = event.data || {};
+  if (tipo === 'SKIP_WAITING') {
+    // El usuario aceptó actualizar: el SW en espera pasa a activo de inmediato
+    self.skipWaiting();
+  } else if (tipo === 'VERSION') {
+    event.ports[0]?.postMessage({ version: VERSION });
+  }
 });
 
 // ---------- Estrategias ----------

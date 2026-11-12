@@ -5,6 +5,7 @@ import { ocultarSplash } from './splash.js';
 import { aplicarTema, registrarVisita } from './prefs.js';
 import { iniciarIndicadorConexion } from './conexion.js';
 import { iniciarSincronizacionResenas } from './resenas.js';
+import { registrarServiceWorker } from './actualizacion.js';
 import './instalacion.js';
 
 // Fase 7.3: indicador de conexión en la barra superior
@@ -26,14 +27,7 @@ ruta('/ajustes', vistaAjustes, 'ajustes');
 // Fase 5.2: el splash se oculta cuando la primera vista terminó de pintarse
 iniciarRouter().finally(ocultarSplash);
 
-// Fase 3: registrar el service worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', async () => {
-    try {
-      const reg = await navigator.serviceWorker.register('./sw.js', { scope: './' });
-      console.log('[App] Service worker registrado con alcance:', reg.scope);
-    } catch (err) {
-      console.error('[App] Error al registrar el service worker:', err);
-    }
-  });
-}
+// Fase 3 + Fase 9: registrar el service worker y vigilar actualizaciones
+window.addEventListener('load', () => {
+  registrarServiceWorker().catch((err) => console.error('[App] Error al registrar el service worker:', err));
+});
