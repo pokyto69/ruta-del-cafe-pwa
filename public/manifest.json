@@ -1,0 +1,35 @@
+{
+  "id": "./",
+  "name": "Ruta del Café",
+  "short_name": "Café",
+  "description": "Descubre cafeterías de especialidad, guarda tus favoritas y deja reseñas incluso sin conexión.",
+  "lang": "es",
+  "dir": "ltr",
+  "start_url": "./?origen=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#6f4e37",
+  "theme_color": "#6f4e37",
+  "categories": ["food", "lifestyle", "travel"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Catálogo",
+      "short_name": "Catálogo",
+      "url": "./#/catalogo",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Cerca de mí",
+      "short_name": "Cerca",
+      "url": "./#/cerca",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
