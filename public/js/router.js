@@ -41,7 +41,8 @@ async function resolver() {
   window.scrollTo(0, 0);
 }
 
+/** Inicia el enrutador y devuelve una promesa que se cumple al pintar la primera vista. */
 export function iniciarRouter() {
   window.addEventListener('hashchange', resolver);
-  resolver();
+  return resolver();
 }

@@ -1,6 +1,6 @@
 // Service worker básico · Fase 3
 // Tres eventos base: install (precachear el shell), activate (limpiar cachés viejas), fetch (servir desde caché).
-const VERSION = 'v2';
+const VERSION = 'v3';
 const CACHE_SHELL = `shell-${VERSION}`;
 
 const SHELL = [
@@ -12,6 +12,8 @@ const SHELL = [
   './js/vistas.js',
   './js/api.js',
   './js/utils.js',
+  './js/splash.js',
+  './js/instalacion.js',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',

@@ -1,6 +1,7 @@
 // Fase 4.2 · Vistas renderizadas en el navegador (CSR).
 import { listarCafes, obtenerCafe } from './api.js';
 import { escapar, estrellas } from './utils.js';
+import { actualizarBotones } from './instalacion.js';
 
 export function tarjetaCafe(c, extra = '') {
   return `
@@ -25,10 +26,13 @@ export async function vistaInicio(el) {
       <p>Descubre cafeterías de especialidad y guarda tus favoritas.</p>
       <div class="acciones" style="justify-content:center">
         <a class="btn" href="#/catalogo">Ver catálogo</a>
+        <button class="btn oculto-inst" type="button" data-instalar>⬇ Instalar app</button>
       </div>
+      <p class="meta" data-estado-instalacion></p>
     </section>
     <h2>Mejor valoradas</h2>
     <div class="rejilla">${destacados.map((c) => tarjetaCafe(c)).join('')}</div>`;
+  actualizarBotones();
 }
 
 export async function vistaCatalogo(el) {
