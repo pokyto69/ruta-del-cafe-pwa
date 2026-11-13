@@ -9,7 +9,7 @@ Construida paso a paso (un commit por fase): app shell, manifiesto, service work
 
 ## Requisitos
 
-- Node.js 18 o superior
+- Node.js 22.12 o superior (lo exige puppeteer-core para las pruebas)
 - Google Chrome o Microsoft Edge (para las pruebas automatizadas)
 
 ## Uso

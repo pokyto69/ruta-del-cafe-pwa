@@ -20,30 +20,32 @@ concurrency:
 jobs:
   # 1) Solo se publica si las pruebas automatizadas pasan.
   pruebas:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22   # puppeteer-core 25 exige Node >= 22.12
           cache: npm
+      - id: chrome
+        uses: browser-actions/setup-chrome@v2
       - run: npm ci
       - name: Claves VAPID temporales (vapid.json no se sube al repositorio)
         run: npm run vapid
       - name: Pruebas de API y extremo a extremo (Chrome del runner)
         run: npm test
         env:
-          CHROME_PATH: /usr/bin/google-chrome
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
 
   # 2) Publicación de public/ en GitHub Pages.
   publicar:
     needs: pruebas
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.despliegue.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Comprobar archivos obligatorios de la PWA
         run: |
           for f in index.html manifest.json sw.js offline.html data/cafes.json icons/icon-192.png icons/icon-512.png; do
