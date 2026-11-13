@@ -55,6 +55,8 @@ beforeEach(async () => {
   pagina.on('pageerror', (e) => errores.push(e.message));
   await pagina.goto(base, { waitUntil: 'networkidle0' });
   await esperarSW(pagina);
+  // El splash cubre la pantalla ~1,1 s; en máquinas lentas (CI) los clics caerían sobre él.
+  await pagina.waitForFunction(() => !document.getElementById('splash'), { timeout: 10000 });
 });
 afterEach(async () => {
   await navegador.close();
