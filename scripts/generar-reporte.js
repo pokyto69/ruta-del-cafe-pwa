@@ -320,7 +320,7 @@ add(
   p('Los íconos se generan con un script propio en Node sin dependencias externas (solo zlib): dibuja una taza de café con suavizado por supermuestreo y codifica el PNG. Se producen versiones «any» (cuadrado redondeado), «maskable» (fondo completo con el dibujo dentro de la zona segura del 80 %), apple-touch-icon, favicon y badge para notificaciones.'),
   ...bloqueCodigo('npm run iconos\n✔ icon-192.png  ✔ icon-512.png  ✔ maskable-192.png  ✔ maskable-512.png\n✔ apple-touch-icon.png  ✔ favicon-32.png  ✔ badge-72.png'),
   h3('2.2 manifest.json'),
-  p('El manifiesto usa rutas relativas (start_url y scope «./») para funcionar tanto en localhost como bajo /<repositorio>/ en GitHub Pages. background_color y theme_color definen el splash del sistema; display standalone abre la app sin barra del navegador; shortcuts añade accesos directos al mantener pulsado el ícono.'),
+  p('El manifiesto usa rutas relativas (start_url y scope «./») para funcionar tanto en localhost como bajo /ruta-del-cafe-pwa/ en GitHub Pages (https://pokyto69.github.io/ruta-del-cafe-pwa/). background_color y theme_color definen el splash del sistema; display standalone abre la app sin barra del navegador; shortcuts añade accesos directos al mantener pulsado el ícono.'),
   ...bloqueCodigo(extraer('public/manifest.json', '"id"', '"icons"'), 'public/manifest.json (fragmento)'),
   p('En el <head> del shell se enlazan el manifiesto, theme-color, favicon y las metaetiquetas para iOS.'),
   cajaCommit(2),
@@ -542,13 +542,13 @@ add(
   h1('6. Fase 13 · Publicación'),
   h2('13.1 Subir el repositorio a GitHub'),
   p('Se creó un repositorio público vacío en GitHub y se subió el historial completo (un commit por fase):'),
-  ...bloqueCodigo('git remote add origin https://github.com/<usuario>/ruta-del-cafe-pwa.git\ngit push -u origin main'),
+  ...bloqueCodigo('git remote add origin https://github.com/pokyto69/ruta-del-cafe-pwa.git\ngit push -u origin main'),
   h2('13.2 Activar GitHub Pages'),
   p('El repositorio incluye el flujo .github/workflows/pages.yml, que publica la carpeta public/ en cada push a main. Para activarlo: Settings → Pages → Build and deployment → Source: «GitHub Actions». El progreso se ve en la pestaña Actions.'),
   h2('13.3 Qué funciona en GitHub Pages y qué necesita el servidor'),
   p('GitHub Pages solo sirve archivos estáticos por HTTPS; no ejecuta Node.js. La app está preparada para degradar con elegancia:'),
   tabla([3600, 1600, 4160], ['Funcionalidad', 'GitHub Pages', 'Observación'], [
-    ['Instalación, manifiesto, íconos, splash', 'Sí', 'Rutas relativas: funciona bajo /<repositorio>/.'],
+    ['Instalación, manifiesto, íconos, splash', 'Sí', 'Rutas relativas: funciona bajo /ruta-del-cafe-pwa/.'],
     ['Service worker, caché y offline', 'Sí', 'Pages sirve por HTTPS, requisito del SW.'],
     ['Catálogo, búsqueda, detalle (CSR)', 'Sí', 'Sin /api se usa data/cafes.json automáticamente.'],
     ['Favoritos, preferencias, IndexedDB', 'Sí', 'Todo ocurre en el navegador.'],
@@ -594,7 +594,7 @@ add(
   vineta('Las notificaciones push requieren un servidor con claves VAPID; son la única parte que no puede ofrecer un hosting estático como GitHub Pages.'),
   vineta('Las pruebas automatizadas en un navegador real detectaron dos errores que no se veían a simple vista (búsqueda en caché del network first y currentTarget nulo tras await).'),
   h1('Anexo · Cómo ejecutar el proyecto'),
-  ...bloqueCodigo('git clone https://github.com/<usuario>/ruta-del-cafe-pwa.git\ncd ruta-del-cafe-pwa\nnpm install\nnpm start            # http://localhost:3000\nnpm test             # pruebas automatizadas (requiere Chrome o Edge)'),
+  ...bloqueCodigo('git clone https://github.com/pokyto69/ruta-del-cafe-pwa.git\ncd ruta-del-cafe-pwa\nnpm install\nnpm start            # http://localhost:3000\nnpm test             # pruebas automatizadas (requiere Chrome o Edge)'),
 );
 
 // ---------- Documento ----------

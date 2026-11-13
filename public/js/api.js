@@ -1,7 +1,7 @@
 // Fase 4.1 · Acceso a los datos remotos del catálogo.
 // Fase 6.3 · Respaldo local: cada respuesta correcta se copia a IndexedDB y,
 //             si la red falla, se leen los datos guardados.
-// Rutas relativas para que funcione en localhost y bajo /<repo>/ en GitHub Pages.
+// Rutas relativas para que funcione en localhost y bajo /ruta-del-cafe-pwa/ en GitHub Pages.
 // Si la API del servidor no existe (GitHub Pages), se usa el JSON estático.
 import { obtenerTodos, obtener, reemplazarTodos } from './db.js';
 
