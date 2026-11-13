@@ -1,7 +1,7 @@
 // Service worker de «Ruta del Café».
 // Fase 3: eventos install / activate / fetch.
 // Fase 7: tres estrategias de caché y página offline.
-const VERSION = 'v9';
+const VERSION = 'v10';
 const CACHE_SHELL = `shell-${VERSION}`;     // app shell precacheado (cache first)
 const CACHE_DATOS = `datos-${VERSION}`;     // respuestas de la API (network first)
 const CACHE_PAGINAS = `paginas-${VERSION}`; // fichas SSR (stale-while-revalidate)
@@ -145,7 +145,11 @@ async function marcarEnviada(resena) {
   });
 }
 
+// En GitHub Pages no hay API: las reseñas se quedan «pendientes» en IndexedDB.
+const HOSTING_ESTATICO = self.location.hostname.endsWith('.github.io');
+
 async function enviarResenasPendientes() {
+  if (HOSTING_ESTATICO) { console.log('[SW] sync: hosting estático, sin servidor de reseñas'); return; }
   const pendientes = await resenasPendientes();
   console.log(`[SW] sync: ${pendientes.length} reseña(s) pendiente(s)`);
   let enviadas = 0;

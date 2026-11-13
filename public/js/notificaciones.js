@@ -2,7 +2,7 @@
 //   Locales: las muestra la propia app con registration.showNotification().
 //   Push:    el servidor las envía a través del servicio push del navegador, aunque la app esté cerrada.
 // Flujo push: permiso → clave pública VAPID → pushManager.subscribe() → enviar la suscripción al servidor.
-import { avisar, escapar } from './utils.js';
+import { avisar, escapar, HOSTING_ESTATICO } from './utils.js';
 
 export const soportaNotificaciones = () => 'Notification' in window && 'serviceWorker' in navigator;
 export const soportaPush = () => soportaNotificaciones() && 'PushManager' in window;
@@ -46,6 +46,7 @@ export async function suscripcionActual() {
 
 export async function suscribirPush() {
   if (!soportaPush()) throw new Error('Este navegador no soporta notificaciones push');
+  if (HOSTING_ESTATICO) throw new Error('Las notificaciones push necesitan el servidor (npm start); en GitHub Pages usa las notificaciones locales.');
   await pedirPermiso();
   const resp = await fetch('api/push/clave-publica');
   if (!resp.ok || !(resp.headers.get('content-type') || '').includes('json')) {

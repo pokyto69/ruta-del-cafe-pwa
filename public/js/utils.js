@@ -1,5 +1,9 @@
 // Utilidades compartidas.
 
+/** true en GitHub Pages: solo archivos estáticos, sin la API del servidor Express.
+ *  Así no se piden rutas api/ que darían 404 (errores en consola y en Lighthouse). */
+export const HOSTING_ESTATICO = location.hostname.endsWith('.github.io');
+
 export const escapar = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => (
   { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
 ));

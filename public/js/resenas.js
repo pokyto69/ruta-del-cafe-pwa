@@ -4,7 +4,7 @@
 // 3. Cuando hay conexión, el SW envía las pendientes y avisa a la página.
 // Navegadores sin Background Sync (Firefox, Safari): se envían desde la página al volver la red.
 import { guardar, porIndice, obtenerTodos } from './db.js';
-import { escapar, estrellas, fecha, avisar } from './utils.js';
+import { escapar, estrellas, fecha, avisar, HOSTING_ESTATICO } from './utils.js';
 import { leerPrefs, guardarPref } from './prefs.js';
 
 export const ETIQUETA_SYNC = 'enviar-resenas';
@@ -46,6 +46,7 @@ export async function programarEnvio() {
 
 /** Alternativa sin Background Sync: misma lógica que el SW, ejecutada en la página. */
 export async function enviarPendientesDesdePagina() {
+  if (HOSTING_ESTATICO) return 0; // sin servidor: quedan pendientes en IndexedDB
   const pendientes = await porIndice('resenas', 'estado', 'pendiente');
   let enviadas = 0;
   for (const r of pendientes) {
@@ -69,6 +70,7 @@ export async function contarPendientes() {
 }
 
 async function resenasDelServidor(cafeId) {
+  if (HOSTING_ESTATICO) return [];
   try {
     const r = await fetch(`api/resenas?cafeId=${encodeURIComponent(cafeId)}`);
     if (!r.ok || !(r.headers.get('content-type') || '').includes('json')) return [];

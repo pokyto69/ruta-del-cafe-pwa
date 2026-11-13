@@ -4,6 +4,7 @@
 // Rutas relativas para que funcione en localhost y bajo /ruta-del-cafe-pwa/ en GitHub Pages.
 // Si la API del servidor no existe (GitHub Pages), se usa el JSON estático.
 import { obtenerTodos, obtener, reemplazarTodos } from './db.js';
+import { HOSTING_ESTATICO } from './utils.js';
 
 /** Origen de los últimos datos mostrados: 'red' | 'local'. */
 export let origenDatos = 'red';
@@ -17,6 +18,7 @@ async function obtenerJSON(url) {
 }
 
 async function catalogoRemoto() {
+  if (HOSTING_ESTATICO) return obtenerJSON('data/cafes.json');
   try {
     return await obtenerJSON('api/cafes');
   } catch {
@@ -43,6 +45,7 @@ export async function obtenerCafe(id) {
   const numId = Number(id);
   try {
     try {
+      if (HOSTING_ESTATICO) throw new Error('Sin API en hosting estático');
       return await obtenerJSON(`api/cafes/${encodeURIComponent(id)}`);
     } catch (e) {
       if (String(e.message).includes('404')) throw e;
