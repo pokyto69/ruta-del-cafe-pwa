@@ -33,7 +33,17 @@ jobs:
       - name: Claves VAPID temporales (vapid.json no se sube al repositorio)
         run: npm run vapid
       - name: Pruebas de API y extremo a extremo (Chrome del runner)
-        run: npm test
+        shell: bash
+        run: |
+          set +e
+          npm test 2>&1 | tee salida-pruebas.txt
+          estado=${PIPESTATUS[0]}
+          # Cada prueba fallida aparece como anotación en el resumen de la ejecución
+          if [ "$estado" -ne 0 ]; then
+            grep -n -A25 '^not ok\|^    not ok\|Error' salida-pruebas.txt | head -c 3500 \
+              | sed ':a;N;$!ba;s/%/%25/g;s/\r/%0D/g;s/\n/%0A/g' | sed 's/^/::error title=Pruebas fallidas::/'
+          fi
+          exit $estado
         env:
           CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
 
