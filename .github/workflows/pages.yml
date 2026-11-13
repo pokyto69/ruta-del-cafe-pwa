@@ -1,5 +1,6 @@
 # Fase 13 · Publica la carpeta public/ en GitHub Pages en cada push a main.
-# Activar en: Settings → Pages → Build and deployment → Source: GitHub Actions
+# Requisito (una sola vez): Settings → Pages → Build and deployment → Source: GitHub Actions
+# Si Pages no está activado, el paso «configure-pages» falla con «Get Pages site failed / Not Found».
 name: Publicar en GitHub Pages
 
 on:
@@ -17,16 +18,51 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # 1) Solo se publica si las pruebas automatizadas pasan.
+  pruebas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Claves VAPID temporales (vapid.json no se sube al repositorio)
+        run: npm run vapid
+      - name: Pruebas de API y extremo a extremo (Chrome del runner)
+        run: npm test
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+
+  # 2) Publicación de public/ en GitHub Pages.
   publicar:
+    needs: pruebas
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.despliegue.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - name: Comprobar archivos obligatorios de la PWA
+        run: |
+          for f in index.html manifest.json sw.js offline.html data/cafes.json icons/icon-192.png icons/icon-512.png; do
+            test -f "public/$f" || { echo "Falta public/$f"; exit 1; }
+          done
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: public
       - id: despliegue
         uses: actions/deploy-pages@v4
+      - name: Verificar que la app publicada responde
+        run: |
+          url="${{ steps.despliegue.outputs.page_url }}"
+          for i in 1 2 3 4 5 6; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "$url") && [ "$code" = "200" ] && break
+            echo "Intento $i: HTTP $code, reintentando…"; sleep 10
+          done
+          for f in "" manifest.json sw.js offline.html; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "$url$f")
+            echo "$url$f → $code"; [ "$code" = "200" ] || exit 1
+          done

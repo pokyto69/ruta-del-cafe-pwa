@@ -35,7 +35,8 @@ async function abrirNavegador() {
     executablePath: rutaNavegador(),
     headless: true,
     userDataDir: perfil,
-    args: ['--no-first-run', '--no-default-browser-check'],
+    // En GitHub Actions (CI=true) el sandbox de Chrome no está disponible en Ubuntu 24.04.
+    args: ['--no-first-run', '--no-default-browser-check', ...(process.env.CI ? ['--no-sandbox'] : [])],
   });
   navegador.on('disconnected', () => {
     // En Windows el proceso puede tardar en soltar los archivos del perfil.
