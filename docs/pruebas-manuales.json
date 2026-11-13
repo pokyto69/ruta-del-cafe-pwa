@@ -1,0 +1,57 @@
+{
+  "fecha": "",
+  "dispositivo": "",
+  "url": "https://pokyto69.github.io/ruta-del-cafe-pwa/",
+  "pruebas": [
+    {
+      "id": "MAN-01",
+      "titulo": "Instalación en el teléfono",
+      "estado": "",
+      "resultado": "",
+      "capturas": ["MAN-01-a.png", "MAN-01-b.png", "MAN-01-c.png"]
+    },
+    {
+      "id": "MAN-02",
+      "titulo": "Modo avión con la app instalada",
+      "estado": "",
+      "resultado": "",
+      "capturas": ["MAN-02-a.png", "MAN-02-b.png"]
+    },
+    {
+      "id": "MAN-03",
+      "titulo": "Reseña sin red y Background Sync",
+      "estado": "",
+      "resultado": "",
+      "capturas": ["MAN-03-a.png", "MAN-03-b.png"]
+    },
+    {
+      "id": "MAN-04",
+      "titulo": "Push con la app cerrada",
+      "estado": "",
+      "resultado": "",
+      "capturas": ["MAN-04-a.png", "MAN-04-b.png"]
+    },
+    {
+      "id": "MAN-05",
+      "titulo": "Cerca de mí con la ubicación real",
+      "estado": "",
+      "resultado": "",
+      "capturas": ["MAN-05-a.png", "MAN-05-b.png"]
+    },
+    {
+      "id": "MAN-06",
+      "titulo": "Compartir con la hoja nativa",
+      "estado": "",
+      "resultado": "",
+      "capturas": ["MAN-06-a.png"]
+    },
+    {
+      "id": "MAN-07",
+      "titulo": "Lighthouse sobre la URL publicada",
+      "estado": "",
+      "resultado": "",
+      "ancho": "completo",
+      "capturas": ["MAN-07-lighthouse.png"]
+    }
+  ]
+}

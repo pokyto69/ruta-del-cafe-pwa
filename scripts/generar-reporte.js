@@ -26,6 +26,9 @@ const datos = {
   ...(fs.existsSync(path.join(RAIZ, 'docs/datos-reporte.json')) ? JSON.parse(leer('docs/datos-reporte.json')) : {}),
 };
 
+// Resultados de las pruebas manuales (docs/pruebas-manuales.json, ver docs/GUIA-PRUEBAS-MANUALES.md)
+const manuales = fs.existsSync(path.join(RAIZ, 'docs/pruebas-manuales.json')) ? JSON.parse(leer('docs/pruebas-manuales.json')) : { pruebas: [] };
+
 const commits = {};
 try {
   execFileSync('git', ['log', '--reverse', '--format=%h|%s'], { cwd: RAIZ, encoding: 'utf8' }).trim().split('\n').forEach((l) => {
@@ -523,16 +526,21 @@ add(
       celda: (k, i, c) => (i === 5 ? { negrita: true, fondo: c === 'Aprobado' ? 'E3F1E4' : c === 'Falló' ? 'F8DEDE' : undefined, alinear: AlignmentType.CENTER } : {}),
     }),
   h2('12.3 Pruebas manuales en dispositivo'),
-  p('Estas pruebas requieren un teléfono o la interfaz gráfica del navegador; completa la columna «Resultado obtenido» al realizarlas.'),
+  p(manuales.fecha
+    ? `Pruebas realizadas el ${manuales.fecha} con ${manuales.dispositivo} sobre ${manuales.url}. Las capturas de cada prueba están en la sección 12.4 (scripts/completar-pruebas-manuales.py).`
+    : 'Estas pruebas requieren un teléfono o la interfaz gráfica del navegador; completa la columna «Resultado obtenido» al realizarlas.'),
   tabla([900, 2900, 3160, 2400], ['ID', 'Pasos', 'Resultado esperado', 'Resultado obtenido'], [
-    ['MAN-01', 'Abrir la URL de GitHub Pages en Chrome Android → «Instalar app».', 'Ícono en la pantalla de inicio; abre en modo standalone con el splash del sistema.', ''],
-    ['MAN-02', 'Con la app instalada, activar el modo avión y abrirla.', 'La app carga el shell, el catálogo y las favoritas.', ''],
-    ['MAN-03', 'Sin red, publicar una reseña; desactivar el modo avión.', 'La reseña pasa de «Pendiente» a enviada sin abrir la app de nuevo.', ''],
-    ['MAN-04', 'Activar push en Ajustes, cerrar la app y publicar una reseña desde otro dispositivo.', 'Llega la notificación «Nueva reseña en …»; al tocarla abre la ficha.', ''],
-    ['MAN-05', '«Cerca de mí» → «Usar mi ubicación» en el teléfono.', 'Pide permiso, vibra y ordena por distancia real.', ''],
-    ['MAN-06', 'Compartir una cafetería desde el detalle.', 'Se abre la hoja de compartir nativa del sistema.', ''],
-    ['MAN-07', 'DevTools → Lighthouse (móvil) sobre la URL publicada.', 'Sin errores graves en Rendimiento, Accesibilidad y Buenas prácticas.', ''],
-  ], { tam: 17 }),
+    ['MAN-01', 'Abrir la URL de GitHub Pages en Chrome Android → «Instalar app».', 'Ícono en la pantalla de inicio; abre en modo standalone con el splash del sistema.'],
+    ['MAN-02', 'Con la app instalada, activar el modo avión y abrirla.', 'La app carga el shell, el catálogo y las favoritas.'],
+    ['MAN-03', 'Sin red, publicar una reseña; desactivar el modo avión.', 'La reseña pasa de «Pendiente» a enviada sin abrir la app de nuevo.'],
+    ['MAN-04', 'Activar push en Ajustes, cerrar la app y publicar una reseña desde otro dispositivo.', 'Llega la notificación «Nueva reseña en …»; al tocarla abre la ficha.'],
+    ['MAN-05', '«Cerca de mí» → «Usar mi ubicación» en el teléfono.', 'Pide permiso, vibra y ordena por distancia real.'],
+    ['MAN-06', 'Compartir una cafetería desde el detalle.', 'Se abre la hoja de compartir nativa del sistema.'],
+    ['MAN-07', 'DevTools → Lighthouse (móvil) sobre la URL publicada.', 'Sin errores graves en Rendimiento, Accesibilidad y Buenas prácticas.'],
+  ].map(([id, pasos, esperado]) => {
+    const m = (manuales.pruebas || []).find((x) => x.id === id) || {};
+    return [id, pasos, esperado, m.resultado ? `${m.estado ? m.estado + ': ' : ''}${m.resultado}` : ''];
+  }), { tam: 17 }),
   cajaCommit(12),
   saltoPagina(),
 );

@@ -27,7 +27,8 @@ npm start          # http://localhost:3000
 | `npm run iconos` | Regenera los íconos PNG |
 | `npm run vapid` | Genera las claves VAPID (`vapid.json`, no se sube a git) |
 | `node scripts/capturas.js` | Regenera las capturas del reporte |
-| `node scripts/generar-reporte.js` | Regenera el reporte en Word |
+| `node scripts/generar-reporte.js` | Genera el reporte base en Word (⚠ sobrescribe la portada hecha a mano) |
+| `python scripts/completar-pruebas-manuales.py` | Vuelca `docs/pruebas-manuales.json` y las capturas al Word existente, conservando la portada |
 
 ## Estructura
 
@@ -43,6 +44,10 @@ docs/            Reporte, capturas y resultados de pruebas
 ## GitHub Pages vs. servidor
 
 GitHub Pages publica `public/` (flujo `.github/workflows/pages.yml`). Allí funcionan la instalación, el modo offline, el catálogo (desde `data/cafes.json`), los favoritos, «Cerca de mí» y las notificaciones locales. La ficha SSR, el envío de reseñas al servidor y las notificaciones push necesitan `npm start`.
+
+## Pruebas manuales
+
+Las pruebas en teléfono (instalación, modo avión, Background Sync, push con la app cerrada, ubicación, compartir) y Lighthouse se describen paso a paso en [`docs/GUIA-PRUEBAS-MANUALES.md`](docs/GUIA-PRUEBAS-MANUALES.md). Los resultados se anotan en `docs/pruebas-manuales.json` y las capturas van en `docs/capturas/manuales/`.
 
 ## Publicar una actualización
 
