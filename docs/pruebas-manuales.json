@@ -1,35 +1,39 @@
 {
-  "fecha": "",
-  "dispositivo": "",
+  "fecha": "13 de noviembre de 2026",
+  "dispositivo": "un Xiaomi POCO F5 Pro (23013PC75G), Android 15 y Chrome 157, conectado por USB a la PC (depuración remota de Chrome)",
   "url": "https://pokyto69.github.io/ruta-del-cafe-pwa/",
   "pruebas": [
     {
       "id": "MAN-01",
       "titulo": "Instalación en el teléfono",
-      "estado": "",
-      "resultado": "",
-      "capturas": ["MAN-01-a.png", "MAN-01-b.png", "MAN-01-c.png"]
+      "estado": "Aprobado",
+      "resultado": "Chrome ofreció «Instalar app» y se instaló como WebAPK (17:54). El ícono «Café» aparece en el cajón de aplicaciones y la app abre en modo standalone, sin barra de direcciones («Estás usando la app instalada»).",
+      "capturas": ["MAN-01-a.png", "MAN-01-b.png", "MAN-01-c.png"],
+      "pie": "Página en Chrome con el botón «Instalar app» · ícono en el cajón de apps · app abierta en modo standalone."
     },
     {
       "id": "MAN-02",
       "titulo": "Modo avión con la app instalada",
-      "estado": "",
-      "resultado": "",
-      "capturas": ["MAN-02-a.png", "MAN-02-b.png"]
+      "estado": "Aprobado",
+      "resultado": "Con modo avión, Wi-Fi y datos apagados (sin red comprobada con ping) se cerró Chrome por completo y se abrió la app desde el ícono: cargó el shell, mostró «Sin conexión», la favorita guardada en IndexedDB y las 8 cafeterías del catálogo.",
+      "capturas": ["MAN-02-a.png", "MAN-02-b.png"],
+      "pie": "Arranque en frío en modo avión: Inicio con la favorita y catálogo completo."
     },
     {
       "id": "MAN-03",
       "titulo": "Reseña sin red y Background Sync",
-      "estado": "",
-      "resultado": "",
-      "capturas": ["MAN-03-a.png", "MAN-03-b.png"]
+      "estado": "Aprobado",
+      "resultado": "Sin red y con el servidor inaccesible, la reseña quedó «Pendiente de envío» en IndexedDB. Al quitar el modo avión, sin tocar la app, Background Sync la envió: llegó al servidor a los 6 s y la app mostró «1 reseña(s) sincronizada(s) con el servidor».",
+      "capturas": ["MAN-03-a.png", "MAN-03-b.png"],
+      "pie": "Reseña pendiente en modo avión · reseña enviada tras recuperar la red."
     },
     {
       "id": "MAN-04",
       "titulo": "Push con la app cerrada",
-      "estado": "",
-      "resultado": "",
-      "capturas": ["MAN-04-a.png", "MAN-04-b.png"]
+      "estado": "Parcial",
+      "resultado": "Se concedió el permiso y la app quedó suscrita (FCM). Con la pestaña de la app cerrada y Chrome en segundo plano se publicó una reseña desde la PC y llegó la notificación «Nueva reseña en Tueste Lento». No se registró la apertura de la ficha al tocar la notificación.",
+      "capturas": ["MAN-04-a.png", "MAN-04-b.png", "MAN-04-c.png"],
+      "pie": "Permiso de notificaciones · suscripción push activa · notificación recibida con la app cerrada (recortada)."
     },
     {
       "id": "MAN-05",
@@ -48,10 +52,11 @@
     {
       "id": "MAN-07",
       "titulo": "Lighthouse sobre la URL publicada",
-      "estado": "",
-      "resultado": "",
+      "estado": "Aprobado",
+      "resultado": "Lighthouse 12.8.2, emulación móvil, sobre la URL de GitHub Pages: Rendimiento 99, Accesibilidad 100, Buenas prácticas 100, SEO 100. FCP 0,9 s, LCP 0,9 s, TBT 40 ms, CLS 0,068. Sin errores en consola. Informe completo en docs/lighthouse/.",
       "ancho": "completo",
-      "capturas": ["MAN-07-lighthouse.png"]
+      "capturas": ["MAN-07-lighthouse.png"],
+      "pie": "Informe de Lighthouse sobre https://pokyto69.github.io/ruta-del-cafe-pwa/"
     }
   ]
 }
